@@ -1,41 +1,39 @@
 import { useState } from "react"
+import uploadFile from "../utils/mediaUpload"	
+
 
 export default function Test(){
 
-	const [count,setCount]=useState(0)
-	const[isVisible,setIsVisible]=useState(true)
-
+	const [file , setFile] = useState(null)
 	
+
+	async function upload(){
+		try{
+
+			const url = await uploadFile(file)
+			console.log(url)
+
+		}catch(err){
+			console.log(err)
+		}
+	}
+
     return(
-        <div className="w-full h-full  bg-yellow-200 flex justify-center items-center">
-			<h1>{isVisible}</h1>
-			<button onClick={
-				()=>{
-					setIsVisible(!isVisible)
-				}
-			}
-			className="w-[50px] h-[50px] bg-red-600 text-white">{isVisible?"X":"O"}</button>
+        <div className="w-full h-full  flex justify-center items-center">
 
-          {isVisible && <div className=" w-[400px] h-[400px] bg-white flex justify-center items-center flex-col">
-			<h1 className="text-[55px]">{count}</h1>
-			<div className="w-full h-[50px]  flex justify-center items-center gap-2">
-				<button onClick={
-					()=>{
-						setCount(count-1)
-						
-					}
+			<input type="file" onChange={
+				(e)=>{
+					setFile(e.target.files[0])
 				}
-				className="w-[100px] h-[45px] bg-red-700 text-white">Decrement</button>
-
-				<button onClick={
-					()=>{
-					setCount(count+1)
-					}
-				}className="w-[100px] h-[45px] bg-green-400 text-white">Increment</button>
+			} />
+			<button onClick={upload} className="w-[100px] h-[40px] bg-blue-500 text-white rounded-lg">
+				Upload
+			</button>
 
 			
-			</div>
-		   </div>}
 		</div>
     )
 }
+
+
+
