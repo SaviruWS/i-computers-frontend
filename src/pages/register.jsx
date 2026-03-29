@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useGoogleLogin } from "@react-oauth/google";
 
 export default function RegisterPage() {
     const [firstName , setFirstName] = useState("")
@@ -10,7 +11,30 @@ export default function RegisterPage() {
 	const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("")
 	const navigate = useNavigate()
-
+	const googleLogin = useGoogleLogin(
+		{
+			onSuccess: (response)=>{
+				axios.post(import.meta.env.VITE_API_URL + "/users/google-login" , {token : response.access_token}).then(
+					(response)=>{
+						toast.success("Login Successful")
+						localStorage.setItem("token" , response.data.token)
+						if(response.data.role == "admin"){
+							navigate("/admin/")
+						}else{
+							navigate("/")
+						}
+					}
+				).catch(
+					(err)=>{
+						toast.error(err?.response?.data?.message || "Google login failed. Please try again.")
+					}
+				)
+			},
+			onError: ()=>{
+				toast.error("Google login failed. Please try again.")
+			}
+		}
+	)
 
 	async function signup(){
         if(password != confirmPassword){
@@ -38,12 +62,13 @@ export default function RegisterPage() {
 
 	return (
 		<div className="w-full h-full bg-[url('/background.jpg')] bg-cover no-repeat bg-center flex">
-			<div className="w-[50%] h-full flex justify-center items-center flex-col">
+			<div className="w-[50%] h-full hidden lg:flex justify-center items-center flex-col">
 				<img src="/logo.png" className="w-[300px]" />
-				<h1 className="text-4xl font-bold mt-5 text-white">Isuri Computers</h1>
+				<h1 className="text-4xl font-bold mt-5 text-white">New Tech Computers</h1>
 			</div>
-			<div className="w-[50%] h-full  flex justify-center items-center">
-				<div className="backdrop-blur-3xl w-[450px] h-[600px] shadow-2xl rounded-lg flex flex-col justify-center">
+			<div className="w-full lg:w-[50%] h-full  flex justify-center items-center">
+				<div className="backdrop-blur-3xl w-[450px] h-[700px] shadow-2xl rounded-lg flex flex-col justify-center">
+					<h1 className="text-3xl p-5 mt-5 text-white text-center">Isuri computers</h1>
                     <div className="w-full h-[50px] flex items-center justify-between px-5">
                         <input
                             value={firstName}
@@ -98,7 +123,7 @@ export default function RegisterPage() {
 					<button onClick={signup} className="m-5 p-3 w-[90%] h-[50px] bg-accent rounded-lg text-white font-bold">
 						Sign up
 					</button>
-					<button  className="m-5 p-3 w-[90%] h-[50px] border border-accent rounded-lg text-white font-bold">
+					<button onClick={googleLogin}  className="m-5 p-3 w-[90%] h-[50px] border border-accent rounded-lg text-white font-bold">
 						Sign up with Google
 					</button>
 					<p className="w-full  text-right pr-5">
