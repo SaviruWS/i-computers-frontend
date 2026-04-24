@@ -103,8 +103,8 @@ export default function ContactPage() {
             </p>
 
             <div className="mt-8 space-y-3">
-              <p className="font-semibold">📞 Call: 071 639 3534</p>
-              <p className="font-semibold">📧 Email: savirubabaranda2002@gmail.com</p>
+              <p className="font-semibold">📞 Call: 0473388995</p>
+              <p className="font-semibold">📧 Email: NewTech@gmail.com</p>
             </div>
 
             <div className="mt-6">
